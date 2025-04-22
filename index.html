@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>音声確認式階層型電話帳アプリ</title>
+    <title>音声確認式階層型電話帳</title>
     <style>
         * {
             margin: 0;
@@ -283,6 +283,13 @@
             margin-top: 15px;
             width: 100%;
         }
+        
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 <body>
@@ -382,7 +389,7 @@
             currentCategory: null,
             currentContact: null,
             isCalling: false,
-            speech: new (window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance)(),
+            speech: null,
             touchTimer: null,
             
             init() {
@@ -393,32 +400,46 @@
             },
             
             setupSpeech() {
+                this.speech = new (window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance)();
                 this.speech.lang = 'ja-JP';
-                this.speech.rate = 0.9;
+                this.speech.rate = 0.85;
+                this.speech.pitch = 1.1;
                 this.speech.volume = 1;
             },
             
             loadContacts() {
-                // 初期カテゴリ名を設定
-                const categories = ['議員', '市役所', '知人', '家族', '友達', 'その他'];
-                categories.forEach((name, index) => {
-                    const categoryId = index + 1;
-                    const saved = localStorage.getItem(`voice_call_category_${categoryId}`);
+                const categories = [
+                    { id: 1, display: '議員', speech: 'ぎいん', color: 'red' },
+                    { id: 2, display: '市役所', speech: 'しやくしょ', color: 'blue' },
+                    { id: 3, display: '知人', speech: 'ちじん', color: 'yellow' },
+                    { id: 4, display: '家族', speech: 'かぞく', color: 'green' },
+                    { id: 5, display: '友達', speech: 'ともだち', color: 'orange' },
+                    { id: 6, display: 'その他', speech: 'そのた', color: 'purple' }
+                ];
+
+                categories.forEach(category => {
+                    const saved = localStorage.getItem(`voice_call_category_${category.id}`);
                     
                     if (!saved) {
-                        // 初回起動時にカテゴリデータを保存
-                        localStorage.setItem(`voice_call_category_${categoryId}`, JSON.stringify({
-                            name: name,
+                        localStorage.setItem(`voice_call_category_${category.id}`, JSON.stringify({
+                            displayName: category.display,
+                            speechName: category.speech,
                             contacts: []
                         }));
                     }
                     
-                    this.updateCategoryDisplay(categoryId, name);
+                    this.updateCategoryDisplay(category.id, category.display, category.color);
                 });
             },
             
+            updateCategoryDisplay(categoryId, name, color) {
+                const btn = document.getElementById(`btn-${categoryId}`);
+                btn.setAttribute('data-color', color);
+                document.getElementById(`name-${categoryId}`).textContent = name;
+                document.getElementById(`number-${categoryId}`).textContent = 'タップして選択';
+            },
+            
             setupEventListeners() {
-                // メインカテゴリボタン
                 for (let i = 1; i <= 6; i++) {
                     const btn = document.getElementById(`btn-${i}`);
                     btn.addEventListener('touchstart', (e) => this.handleCategoryTouchStart(i, e));
@@ -426,13 +447,8 @@
                     btn.addEventListener('click', (e) => e.preventDefault());
                 }
                 
-                // 戻るボタン
                 document.getElementById('backBtn').addEventListener('click', () => this.showMainCategories());
-                
-                // 編集モードボタン
                 document.getElementById('editModeBtn').addEventListener('click', () => this.openEditModal());
-                
-                // モーダル操作
                 document.getElementById('saveBtn').addEventListener('click', () => this.saveContact());
                 document.getElementById('cancelBtn').addEventListener('click', () => this.closeEditModal());
                 document.getElementById('categorySelect').addEventListener('change', (e) => this.prepareEditForm());
@@ -463,24 +479,24 @@
             
             handleSingleTapCategory(categoryId) {
                 const categoryData = JSON.parse(localStorage.getItem(`voice_call_category_${categoryId}`));
-                this.showSubcategories(categoryId, categoryData.name, categoryData.contacts);
+                this.speak(categoryData.speechName + "カテゴリ");
+                this.showSubcategories(categoryId, categoryData.displayName, categoryData.contacts);
             },
             
             handleSingleTapContact(contactId) {
                 const categoryData = JSON.parse(localStorage.getItem(`voice_call_category_${this.currentCategory}`));
                 const contact = categoryData.contacts.find(c => c.id === contactId);
                 
-                if (!contact) {
+                if (contact) {
+                    this.speak(contact.name);
+                } else {
                     this.speak('連絡先が見つかりません');
-                    return;
                 }
-                
-                this.speak(contact.name);
             },
             
             handleLongPress(categoryId) {
                 const categoryData = JSON.parse(localStorage.getItem(`voice_call_category_${categoryId}`));
-                this.speak(`${categoryData.name}カテゴリを選択しました。登録されている連絡先は${categoryData.contacts.length}件です。`);
+                this.speak(`${categoryData.speechName}カテゴリ。登録件数は${categoryData.contacts.length}件です`);
             },
             
             handleLongPressContact(contactId) {
@@ -527,10 +543,8 @@
                 
                 if (contacts.length === 0) {
                     const emptyMsg = document.createElement('div');
+                    emptyMsg.className = 'empty-message';
                     emptyMsg.textContent = '登録された連絡先はありません';
-                    emptyMsg.style.textAlign = 'center';
-                    emptyMsg.style.padding = '20px';
-                    emptyMsg.style.color = '#666';
                     container.appendChild(emptyMsg);
                 } else {
                     contacts.forEach(contact => {
@@ -550,7 +564,6 @@
                     });
                 }
                 
-                // 連絡先追加ボタン
                 const addBtn = document.createElement('button');
                 addBtn.className = 'add-contact-btn';
                 addBtn.id = 'addContactBtn';
@@ -562,7 +575,8 @@
                 });
                 container.appendChild(addBtn);
                 
-                this.speak(`${categoryName}カテゴリ。登録されている連絡先は${contacts.length}件です。`);
+                const categoryData = JSON.parse(localStorage.getItem(`voice_call_category_${categoryId}`));
+                this.speak(`${categoryData.speechName}カテゴリ。登録件数は${contacts.length}件です`);
             },
             
             showMainCategories() {
@@ -570,7 +584,7 @@
                 document.getElementById('subcategoryContainer').style.display = 'none';
                 document.getElementById('backBtn').style.display = 'none';
                 document.getElementById('headerTitle').textContent = '音声確認式階層型電話帳';
-                this.speak('メインカテゴリ画面です。');
+                this.speak('メインカテゴリ画面です');
             },
             
             openEditModal() {
@@ -601,7 +615,7 @@
                 
                 const categoryData = JSON.parse(localStorage.getItem(`voice_call_category_${categoryId}`));
                 const newContact = {
-                    id: Date.now(), // 簡易的なID生成
+                    id: Date.now(),
                     name: name,
                     number: number
                 };
@@ -612,14 +626,9 @@
                 this.closeEditModal();
                 this.speak(`${name}を保存しました`);
                 
-                // 現在表示中のカテゴリを更新
                 if (document.getElementById('subcategoryContainer').style.display === 'grid') {
-                    this.showSubcategories(this.currentCategory, categoryData.name, categoryData.contacts);
+                    this.showSubcategories(this.currentCategory, categoryData.displayName, categoryData.contacts);
                 }
-            },
-            
-            updateCategoryDisplay(categoryId, name) {
-                document.getElementById(`name-${categoryId}`).textContent = name;
             },
             
             closeEditModal() {
@@ -638,9 +647,17 @@
             
             speak(text) {
                 if (window.speechSynthesis) {
-                    this.speech.text = text;
+                    // 「知人」を強制的に「ちじん」に変換
+                    const spokenText = text.replace(/知人/g, 'ちじん')
+                                          .replace(/知人カテゴリ/g, 'ちじんカテゴリ');
+                    
+                    const msg = new SpeechSynthesisUtterance(spokenText);
+                    msg.lang = 'ja-JP';
+                    msg.rate = 0.85;
+                    msg.pitch = 1.1;
+                    
                     window.speechSynthesis.cancel();
-                    window.speechSynthesis.speak(this.speech);
+                    window.speechSynthesis.speak(msg);
                 }
             },
             
