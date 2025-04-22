@@ -65,28 +65,29 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 15px;
+            height: calc(100vh - 170px);
         }
         
         .category-btn {
             background: white;
             border-radius: 20px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            padding: 25px 10px;
-            min-height: 120px;
             border: none;
-            font-size: 22px;
+            font-size: 28px;
             font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            height: 100%;
+            min-height: 150px;
         }
         
         .category-btn[data-category="議員"] { background: #FF4444; color: white; }
         .category-btn[data-category="市役所"] { background: #4488FF; color: white; }
-        .category-btn[data-category="知人"] { background: #FFCC00; color: #333; }
+        .category-btn[data-category="知り合い"] { background: #FFCC00; color: #333; }
         .category-btn[data-category="家族"] { background: #00AA55; color: white; }
         .category-btn[data-category="友達"] { background: #FF8800; color: white; }
         .category-btn[data-category="その他"] { background: #AA44FF; color: white; }
@@ -273,8 +274,8 @@
                 <button class="category-btn" data-category="市役所" id="category-2">
                     市役所
                 </button>
-                <button class="category-btn" data-category="知人" id="category-3">
-                    知人
+                <button class="category-btn" data-category="知り合い" id="category-3">
+                    知り合い
                 </button>
                 <button class="category-btn" data-category="家族" id="category-4">
                     家族
@@ -308,7 +309,7 @@
                 <select id="editCategory">
                     <option value="議員">議員</option>
                     <option value="市役所">市役所</option>
-                    <option value="知人">知人</option>
+                    <option value="知り合い">知り合い</option>
                     <option value="家族">家族</option>
                     <option value="友達">友達</option>
                     <option value="その他">その他</option>
@@ -365,7 +366,7 @@
                     const defaultCategories = {
                         "議員": [],
                         "市役所": [],
-                        "知人": [],
+                        "知り合い": [],
                         "家族": [],
                         "友達": [],
                         "その他": []
