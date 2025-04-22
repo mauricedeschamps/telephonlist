@@ -65,7 +65,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            height: calc(100vh - 170px);
+            height: calc(100vh - 70px);
         }
         
         .category-btn {
@@ -93,10 +93,12 @@
         .category-btn[data-category="その他"] { background: #AA44FF; color: white; }
         
         .contacts-container {
-            display: none;
-            grid-template-columns: 1fr;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             margin-top: 10px;
+heights: 100%;
+min-height: 0;
         }
         
         .contact-btn {
@@ -138,6 +140,15 @@
             margin-top: 10px;
             width: 100%;
         }
+
+
+        .category-btn {
+            /* 他のスタイルはそのまま */
+            min-height: 120px; /* 変更 */
+            font-size: 24px; /* 変更 */
+            padding: 15px; /* 変更 */
+        }
+
         
         .footer {
             background: #333;
@@ -147,6 +158,7 @@
             font-size: 16px;
             position: fixed;
             bottom: 0;
+            height: 60px;
             width: 100%;
             line-height: 1.5;
         }
