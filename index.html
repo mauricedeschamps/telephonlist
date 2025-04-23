@@ -58,14 +58,15 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 90px 12px 80px;
+            padding: 90px 12px 120px; /* 下部のパディングを120pxに増やしました */
+            margin-bottom: 20px; /* フッターとの余白を確保 */
         }
         
         .category-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            height: calc(100vh - 170px);
+            height: calc(100vh - 210px); /* 余白を考慮して高さを調整 */
         }
         
         .category-btn {
@@ -149,6 +150,7 @@
             bottom: 0;
             width: 100%;
             line-height: 1.5;
+            margin-top: 20px; /* 上部に余白を追加 */
         }
         
         .footer a {
@@ -158,7 +160,7 @@
         
         .status-message {
             position: fixed;
-            bottom: 160px;
+            bottom: 180px; /* フッターの余白を考慮して位置調整 */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.85);
@@ -572,4 +574,3 @@
     </script>
 </body>
 </html>
-
