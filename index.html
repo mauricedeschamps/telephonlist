@@ -152,7 +152,7 @@
             bottom: 0;
             width: 100%;
             line-height: 1.5;
-            height: 60px; /* フッターの高さを固定 */
+            height: 80px; /* フッターの高さを固定 */
         }
         
         .footer a {
@@ -180,6 +180,7 @@
         /* 以下、既存のスタイルは変更なし */
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="header-title">音声確認式通話アプリ</div>
@@ -482,14 +483,4 @@
             
             announceReady() {
                 setTimeout(() => {
-                    this.speak('音声確認式カテゴリ別通話アプリの準備ができました。カテゴリを選択すると、そのカテゴリの連絡先が表示されます。連絡先をタップすると登録名を読み上げます。長押しで直接発信します。編集はヘッダーの編集ボタンから行えます。');
-                }, 800);
-            }
-        };
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            VoiceCallApp.init();
-        });
-    </script>
-</body>
-</html>
+                    this.speak('音声確認式カテゴリ別通話アプリの
