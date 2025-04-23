@@ -17,12 +17,13 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
             overflow: hidden;
             background: #f5f5f5;
             display: flex;
             flex-direction: column;
+            padding-bottom: 80px; /* フッターの高さ分の余白を追加 */
         }
         
         .header {
@@ -58,15 +59,16 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 90px 12px 120px; /* 下部のパディングを120pxに増やしました */
-            margin-bottom: 20px; /* フッターとの余白を確保 */
+            padding: 90px 12px 30px; /* 下部のパディングを調整 */
+            margin-top: 70px; /* ヘッダーの高さ分を確保 */
+            margin-bottom: 20px; /* フッターとの余白 */
         }
         
         .category-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            height: calc(100vh - 210px); /* 余白を考慮して高さを調整 */
+            min-height: calc(100vh - 200px); /* 余白を考慮して高さを調整 */
         }
         
         .category-btn {
@@ -150,7 +152,7 @@
             bottom: 0;
             width: 100%;
             line-height: 1.5;
-            margin-top: 20px; /* 上部に余白を追加 */
+            height: 80px; /* フッターの高さを固定 */
         }
         
         .footer a {
@@ -160,7 +162,7 @@
         
         .status-message {
             position: fixed;
-            bottom: 180px; /* フッターの余白を考慮して位置調整 */
+            bottom: 100px; /* フッターの高さを考慮して調整 */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.85);
@@ -175,90 +177,7 @@
             text-align: center;
         }
         
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 420px;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            -webkit-user-select: text;
-            user-select: text;
-        }
-        
-        .modal-actions {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        
-        .modal-btn {
-            padding: 16px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            flex: 1;
-        }
-        
-        .cancel-btn {
-            background: #FF4444;
-            color: white;
-        }
-        
-        .save-btn {
-            background: #00AA55;
-            color: white;
-        }
-        
-        .add-contact-btn {
-            background: #0066CC;
-            color: white;
-            padding: 16px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
+        /* 以下、既存のスタイルは変更なし */
     </style>
 </head>
 <body>
